@@ -43,14 +43,34 @@ def colour_out(text, colour=WHITE):
 
 
 
-servers = ["127.0.0.1"]
+servers = ["127.0.0.1","127.0.0.1","192.168.1.38"]
+
 port =  9999
 data = "ECHO"
+TAB_BY = 5
+max_server_string = 0
+
+#better tabulation starts here
+
+
+def giveme_spaces(spaces,string=' '):
+
+    for a in range(0,spaces):
+        sys.stdout.write(string)
+
+
+for server in servers:
+
+    if len(server) > max_server_string:
+
+        max_server_string = len(server)
+
+
 
 while 1:
 
     for server in servers:
-
+        SPACES= ''
         data = ''
         # Create a socket (SOCK_STREAM means a TCP socket)
 
@@ -66,7 +86,12 @@ while 1:
             received = sock.recv(1024)
 
             data =  str(received).split(";")
-            colour_out(server+"  #  ", BLUE)
+
+            for a in range(0, int(max_server_string)-len(server)):
+
+                SPACES = SPACES+" "
+
+            colour_out(SPACES+server+" # ", BLUE)
 
             for stat in data:
 
@@ -89,6 +114,11 @@ while 1:
                         color = RED
 
                     colour_out(fine[0]+" : ", WHITE)
+
+                    if len(fine[1])<TAB_BY:
+
+                        giveme_spaces((5-len(fine[1]))," ")
+
                     colour_out(fine[1]+" % ", color)
 
 
@@ -115,12 +145,22 @@ while 1:
                 elif stat_name == 'NUP':
 
                         colour_out(fine[0]+" : ", WHITE)
+
+                        if len(fine[1])<TAB_BY:
+
+                            giveme_spaces((5-len(fine[1]))," ")
+
                         colour_out(fine[1]+" MB/s ", CYAN)
 
 
                 elif stat_name == 'NDOWN':
 
                         colour_out(fine[0]+" : ", WHITE)
+
+                        if len(fine[1])<TAB_BY:
+
+                            giveme_spaces((5-len(fine[1]))," ")
+
                         colour_out(fine[1]+" MB/s ", CYAN)
 
 
@@ -135,6 +175,10 @@ while 1:
                         color = RED
 
                     colour_out(fine[0]+" : ", WHITE)
+                    if len(fine[1])<TAB_BY:
+
+                        giveme_spaces((5-len(fine[1]))," ")
+
                     colour_out(fine[1]+" % ", color)
 
 
@@ -153,6 +197,11 @@ while 1:
                         color = RED
 
                     colour_out(fine[0]+" : ", WHITE)
+
+                    if len(fine[1])<TAB_BY:
+
+                            giveme_spaces((5-len(fine[1]))," ")
+
                     colour_out(fine[1]+" % ", color)
 
 
@@ -175,4 +224,8 @@ while 1:
             sock.close()
 
     time.sleep(5)
-    print "----------------------------------------"
+
+
+    giveme_spaces(max_server_string,"-")
+
+    print "\r"
