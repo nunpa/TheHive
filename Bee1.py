@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from collections import namedtuple
 import time
@@ -23,6 +24,43 @@ def get_ram():
     return readable
 
 
+def get_users():
+
+    if float( psutil.__version__[0:3]) > 0.5:
+
+        if int(psutil_version[0]) < 2:
+
+            users = psutil.get_users()
+
+        elif int(psutil_version[0]) >= 2:
+
+            users = psutil.users()
+
+
+        unique_users = []
+
+        for user in users:
+
+            if user[0] not in unique_users:
+
+                unique_users.append(user[0])
+
+        if len(unique_users)>=1:
+
+            for username in unique_users:
+
+                readable = username+" "
+
+            return "USERS:"+readable
+            
+        else:
+
+           return "none"
+
+    else:
+
+        return "unknow"
+
 def get_network():
 
     if int(psutil_version[0]) >= 1:
@@ -30,6 +68,7 @@ def get_network():
         net1 = psutil.net_io_counters(pernic=True)
         time.sleep(2)
         net2 = psutil.net_io_counters(pernic=True)
+
     else:
 
         net1 = psutil.network_io_counters(pernic=True)
@@ -58,7 +97,7 @@ def disk_usage(path):
     used = (((st.f_blocks - st.f_bfree) * st.f_frsize/1024)/1024)
     if free > 1024:
         #a gigas
-        readable = str(free/1024)+"GB"
+        readable = str(free/1024)+" GB"
     else:
         readable = str(free)+" MB"
 
@@ -81,11 +120,11 @@ def my_status():
     response = response+get_ram()
     response = response+get_network()
 
-
-
     for hd in hards:
 
         response = response+"HD:"+disk_usage(hd)+";"
+
+    response = response+get_users()
 
     return response
 
